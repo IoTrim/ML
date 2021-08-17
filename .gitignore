@@ -1,4 +1,5 @@
 images
 data
 oli-env
+__pycache__
 *.png
