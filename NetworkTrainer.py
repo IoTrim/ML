@@ -86,6 +86,7 @@ class NetworkTrainer():
         sampler = RandomOverSampler(**ran) if sampling == "over" else RandomUnderSampler(**ran)
 
         X_train, y_train = sampler.fit_resample(X_train, y_train)
+        X_test, y_test = sampler.fit_resample(X_test, y_test)
 
         self.inputDims = X.shape[1]
         self.X_train = X_train

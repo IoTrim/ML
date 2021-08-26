@@ -10,7 +10,7 @@ class NetworkCompare:
         self.plotDir = "images/"
         self.loss = {}
         self.accuracy = {}
-        self.seeds = [i**i for i in range(numNetworks)]
+        self.seeds = [i*i for i in range(numNetworks)]
 
     def generateNetworks(self):
         files = os.listdir(self.datasetDir)
@@ -35,7 +35,7 @@ class NetworkCompare:
     def plot(self):
         d = {"Accuracy":self.accuracy, "Loss":self.loss}
         for k, v in d.items():
-            plt.title(k + "of NeuralNetworks trained on different time Deltas")
+            plt.title(k + " of Neural Networks trained on different time Deltas")
             plt.xticks(rotation=90)
             plt.plot(v.keys(), v.values(), color='orange')
             plt.xlabel('Seconds after DHCP broadcast') 
@@ -45,6 +45,7 @@ class NetworkCompare:
 
 
 if __name__ == "__main__":
-    NC = NetworkCompare(1)
-    NC.generateNetworks()
-    NC.plot()
+    for i in [1,2,4,8,16]:
+        NC = NetworkCompare(i)
+        NC.generateNetworks()
+        NC.plot()
