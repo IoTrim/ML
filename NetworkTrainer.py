@@ -1,6 +1,7 @@
 from keras.models import Sequential
 from keras.layers import Dense, Dropout
 from keras.utils import np_utils
+from keras.utils.vis_utils import plot_model
 from keras.metrics import CategoricalAccuracy
 from keras.callbacks import EarlyStopping
 from sklearn.metrics import confusion_matrix
@@ -33,14 +34,13 @@ class NetworkTrainer():
 
     def plot_history(self, save = False):
         for metric in self.history.history.keys():
-            if metric[0:3] != 'val':
-                plt.plot(self.history.history[metric])
-                plt.title('Categorical Accuracy for ' + self.databaseFile[9:] + " dataset")
-                plt.ylabel(metric)
-                plt.xlabel('epoch')
-                plt.legend(['train', 'test'], loc='upper left')
-                if save:
-                    plt.savefig("images/" + self.databaseFile[9:] + "_history.png")
+            plt.plot(self.history.history[metric])
+            plt.title('Categorical Accuracy and Loss for ' + self.databaseFile[9:] + " dataset")
+            plt.ylabel(metric)
+            plt.xlabel('epoch')
+            plt.legend([k for k in self.history.history.keys()], loc='upper right')
+            if save:
+                plt.savefig("images/" + self.databaseFile[9:] + "_history.png")
         return plt
 
     def plot_confusion_matrix(self, save = False):
@@ -57,6 +57,7 @@ class NetworkTrainer():
         # read data from csv
         df = pd.read_csv(self.databaseFile, index_col=0)
         df = df.sample(frac=1).reset_index(drop=True) # shuffle dataset
+        df = df.dropna()
 
         dataset = df.values
         X = dataset[:,1:].astype(float) # using all features
@@ -105,6 +106,9 @@ class NetworkTrainer():
         self.model.compile(optimizer='adam',
                     loss='categorical_crossentropy',
                     metrics=['categorical_accuracy'])
+
+        plot_model(self.model, to_file='model_plot.png', show_shapes=True, show_layer_names=True)
+
 
     def train_model(self, epochs=15):
         # early stopping criteria
